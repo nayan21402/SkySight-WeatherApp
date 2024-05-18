@@ -1,0 +1,8 @@
+<resources>
+    <string name="app_name" translatable="false">SkySight</string>
+    <string name="example" translatable="false">exampleeeeeeeeekkkkkkkkkkkkkkk</string>
+    <string name="humidity" translatable="false">"Humidity</string>
+    <string name="uv_index" translatable="false">"UV Index</string>
+    <string name="precipitation" translatable="false">"Precipitation</string>
+    <string name="wind_speed" translatable="false">"Wind Speed</string>
+</resources>
