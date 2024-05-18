@@ -63,7 +63,6 @@ fun OnBoardingScreen(context: Context,viewModel: WeatherViewModel,onComplete: ()
     val locPermission = locationPermissionRequestAndObtain(viewModel = viewModel, context = LocalContext.current){
         permission=true
     }
-    val notiPermission= notificationPermissionRequestAndObtain()
     WeatherBackground(imageId = R.drawable.day_sunny) {
         var loc by remember {
             mutableStateOf("NA")
@@ -75,7 +74,7 @@ fun OnBoardingScreen(context: Context,viewModel: WeatherViewModel,onComplete: ()
             Text(text = "Welcome to SkySight!\n Please allow location and Notification permission to get accurate weather data.", modifier = Modifier.fillMaxWidth(), textAlign = TextAlign.Center, fontFamily = gotham, fontWeight = FontWeight.Medium, color = Color.Black)
             Button(
                 onClick = {
-                    locPermission.launch(Manifest.permission.ACCESS_FINE_LOCATION)
+                    locPermission.launch(arrayOf(Manifest.permission.POST_NOTIFICATIONS,Manifest.permission.ACCESS_FINE_LOCATION) )
                 },
                 modifier = Modifier
                     .fillMaxWidth()
@@ -83,17 +82,6 @@ fun OnBoardingScreen(context: Context,viewModel: WeatherViewModel,onComplete: ()
                 colors = ButtonDefaults.buttonColors(containerColor = Color.Black, contentColor = Color.White)
             ) {
                 Text(text = "Give Location Permission", fontFamily = gotham)
-            }
-            Button(
-                onClick = {
-                    notiPermission.launch(Manifest.permission.POST_NOTIFICATIONS)
-                },
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(16.dp),
-                colors = ButtonDefaults.buttonColors(containerColor = Color.Black, contentColor = Color.White)
-            ) {
-                Text(text = "Give Notification Permission", fontFamily = gotham)
             }
 
             if(permission){
@@ -118,35 +106,24 @@ fun OnBoardingScreen(context: Context,viewModel: WeatherViewModel,onComplete: ()
 
 
 @Composable
-fun locationPermissionRequestAndObtain(viewModel: WeatherViewModel, context: Context,onLaunched:()->Unit): ManagedActivityResultLauncher<String, Boolean> {
+fun locationPermissionRequestAndObtain(viewModel: WeatherViewModel, context: Context,onLaunched:()->Unit): ManagedActivityResultLauncher<Array<String>, Map<String, @JvmSuppressWildcards Boolean>> {
 
 
     val requestPermissionLauncher = rememberLauncherForActivityResult(
-        contract = ActivityResultContracts.RequestPermission()
-    ) { isGranted: Boolean ->
-        if (isGranted) {
+        contract = ActivityResultContracts.RequestMultiplePermissions()
+    ) { permissionsResult: Map<String, Boolean> ->
+        val locationPermissionGranted = permissionsResult[Manifest.permission.ACCESS_FINE_LOCATION] ?: false
+
+        if (locationPermissionGranted) {
             viewModel.setLocationGps(context)
-            onLaunched()
-        } else {
             onLaunched()
 
         }
+
     }
     return requestPermissionLauncher
 }
 
 
-@Composable
-fun notificationPermissionRequestAndObtain(): ManagedActivityResultLauncher<String, Boolean> {
-
-
-    val requestPermissionLauncher = rememberLauncherForActivityResult(
-        contract = ActivityResultContracts.RequestPermission()
-    )  {
-
-    }
-
-    return requestPermissionLauncher
-}
 
 

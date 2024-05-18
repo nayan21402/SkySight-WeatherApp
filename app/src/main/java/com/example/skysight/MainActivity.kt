@@ -119,8 +119,8 @@ class MainActivity : ComponentActivity() {
         // Create a periodic work request to run every hour
         val workRequest = PeriodicWorkRequest.Builder(
             worker::class.java,
-            15, // Repeat interval
-            TimeUnit.MINUTES
+            1, // Repeat interval
+            TimeUnit.HOURS
         ).build()
 
         WorkManager.getInstance(context).enqueue(workRequest)

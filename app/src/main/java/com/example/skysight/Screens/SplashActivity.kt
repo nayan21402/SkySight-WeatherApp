@@ -42,7 +42,10 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.core.content.ContextCompat
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -57,6 +60,7 @@ import com.example.skysight.data.DataRepository
 import com.example.skysight.data.api.WeatherApi
 import com.example.skysight.data.db.WeatherDatabase
 import com.example.skysight.ui.theme.SkySightTheme
+import com.example.skysight.ui.theme.gotham
 import com.example.skysight.viewModel.WeatherViewModel
 import java.util.concurrent.TimeUnit
 
@@ -92,8 +96,8 @@ class SplashActivity : ComponentActivity() {
 @Composable
 fun SplashScreenPage(){
     val statusBarHeight = WindowInsets.statusBars.asPaddingValues().calculateTopPadding()
-
-    WeatherBackground2(imageId = R.drawable.splash_screen)
+    
+    WeatherBackground2(imageId = R.drawable.day_sunny)
     {
         Scaffold(
             modifier = Modifier.padding(15.dp),
@@ -112,10 +116,13 @@ fun SplashScreenPage(){
                     it
                 )
                 .fillMaxWidth()
-                .fillMaxSize()
+                .fillMaxSize(),
+                verticalArrangement = Arrangement.SpaceAround,
+                horizontalAlignment = Alignment.CenterHorizontally,
             ) {
-                val context = LocalContext.current
-
+               Text(text = "WELCOME TO\nSKYSIGHT", lineHeight = 50.sp, modifier = Modifier.fillMaxWidth(), fontWeight = FontWeight.Bold, fontSize = 40.sp, textAlign = TextAlign.Center, fontFamily = gotham,color= Color.Black)
+                Image(painter = painterResource(id = R.drawable.skysight_appicon), contentDescription = "app icon", modifier = Modifier.size(200.dp))
+                Text(text = "Your personalized portal to\n Meteorological Marvels", fontSize = 15.sp, modifier = Modifier.fillMaxWidth(), textAlign = TextAlign.Center, fontFamily = gotham,color= Color.Black)
             }
             }
 

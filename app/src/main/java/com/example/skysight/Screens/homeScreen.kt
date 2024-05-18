@@ -1,6 +1,7 @@
 package com.example.skysight.Screens
 
 import android.util.Log
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -21,9 +22,12 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.KeyboardArrowDown
+import androidx.compose.material.icons.filled.KeyboardArrowUp
 import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Divider
+import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Switch
@@ -44,6 +48,7 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.skysight.R
@@ -131,9 +136,59 @@ fun homeScreen(viewModel: WeatherViewModel, onClick : ()-> Unit, aiAct : (String
     Log.d("home",ui.LiveWeatherData.toString())
 
     if(ui.TodayData==null || ui.weatherForecast==null){
-        Column(modifier = Modifier.fillMaxSize(), verticalArrangement = Arrangement.Center, horizontalAlignment = Alignment.CenterHorizontally) {
+
+        var isVisible by remember { mutableStateOf(false) }
+
+        Column(
+            modifier = Modifier.fillMaxSize(), verticalArrangement = Arrangement.Center, horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            // Row to hold the IconButton and the trigger text
             viewModel.getWeather(ui.gpsLocation)
             CircularProgressIndicator(color = Color.Black)
+
+            Text(text = "Loading...", fontFamily = gotham, modifier = Modifier.padding(10.dp))
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(16.dp),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Text(
+                    text = "Stuck on the loading screen?"
+                    ,
+                    fontFamily = gotham,
+                    textAlign = TextAlign.Center,
+                    modifier = Modifier
+                        .padding(start = 8.dp)
+                        .weight(1f)  // Use weight to fill the remaining space
+                )
+                IconButton(onClick = { isVisible = !isVisible }) {
+                    Icon(
+                        imageVector = if(!isVisible) Icons.Filled.KeyboardArrowDown else Icons.Filled.KeyboardArrowUp,  // Replace with your icon resource
+                        contentDescription = "Info Icon"
+                    )
+                }
+            }
+            AnimatedVisibility(
+                visible = isVisible
+            ) {
+                Column {
+                    Text(
+                        text = "If error persists please check if all permissions have been granted and you have a working network.",
+                        modifier = Modifier.padding(16.dp),
+                        fontFamily = gotham
+                    )
+                    Text(
+                        text = "If error is still there try clearing app data.",
+                        modifier = Modifier.padding(16.dp),
+                        fontFamily = gotham
+                    )
+                }
+
+            }
+
+            // Animated visibility for the error message
+
         }
     }
     else{
